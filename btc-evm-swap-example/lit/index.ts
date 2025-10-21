@@ -95,7 +95,7 @@ export async function mintGrantBurnPKP(_action_ipfs: string) {
     const signer = await getEvmWallet();
 
     const litContracts = new LitContracts({
-        // signer: signer,
+        signer: signer,
         network: LitNetwork.DatilDev,
         debug: false,
     });
