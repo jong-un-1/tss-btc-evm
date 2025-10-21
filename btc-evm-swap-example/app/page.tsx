@@ -14,7 +14,7 @@ export default function Home() {
     const [btc, setBtc] = useState(null);
 
     const buttonStyle = "px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 min-w-[280px]";
-    const infoStyle = "text-lg font-mono bg-gray-100 px-4 py-2 rounded border border-gray-300";
+    const infoStyle = "text-lg font-mono bg-gray-50 px-4 py-2 rounded border border-gray-300 text-gray-800";
 
     return (
         <div className="flex flex-col items-center gap-6 p-8 min-h-screen bg-gradient-to-b from-blue-50 to-white">

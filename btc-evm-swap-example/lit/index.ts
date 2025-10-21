@@ -7,8 +7,8 @@ import {
     AuthMethodScope,
     LIT_CHAINS,
     LIT_RPC,
+    LitAbility,
 } from "@lit-protocol/constants";
-import { LitAbility } from "@lit-protocol/types";
 import {
     LitActionResource,
     createSiweMessageWithRecaps,
