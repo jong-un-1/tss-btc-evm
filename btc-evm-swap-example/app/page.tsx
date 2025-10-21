@@ -16,7 +16,7 @@ export default function Home() {
     return (
         <div className="flex flex-col items-center gap-[1.2rem]">
             <h1 className="mb-[1.5rem] mt-[0.8rem]">
-                LIT EVM-EVM Bridge Demo (Open Console)
+                BTC ↔ EVM Cross-Chain Swap Demo (Open Console)
             </h1>
             <p>IPFS Id, {ipfsId}</p>
             <p>PKP Address, {pkp?.ethAddress}</p>
