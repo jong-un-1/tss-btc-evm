@@ -14,10 +14,17 @@ const ECPair = ECPairFactory(ecc);
 
 const BTC_ENDPOINT = getEnv("BTC_ENDPOINT");
 
-const PKP_PUBLIC_KEY = getEnv("PKP_PUBLIC_KEY");
-const LIT_ACTION = fs.readFileSync("./actions/taproot-action.js");
-
 const action = process.argv[2];
+
+// Only load PKP_PUBLIC_KEY and LIT_ACTION when needed (not for create-pkp)
+let PKP_PUBLIC_KEY: string;
+let LIT_ACTION: Buffer;
+
+if (action !== "create-pkp") {
+    PKP_PUBLIC_KEY = getEnv("PKP_PUBLIC_KEY");
+    LIT_ACTION = fs.readFileSync("./actions/taproot-action.js");
+}
+
 if (action === "create-wallet") {
     createWallet();
 } else if (action === "create-sign-txn") {

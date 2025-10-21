@@ -12,8 +12,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "description": "",
+  "license": "MIT",
+  "description": "Bitcoin Taproot Wrapped Keys with Lit Protocol",
   "devDependencies": {
     "@types/node": "^22.10.2",
     "typescript": "^5.7.2"
@@ -21,8 +21,10 @@
   "dependencies": {
     "@bitcoin-js/tiny-secp256k1-asmjs": "^2.2.3",
     "@bitcoinerlab/secp256k1": "^1.2.0",
-    "@lit-protocol/lit-auth-client": "^7.0.2",
-    "@lit-protocol/lit-node-client": "^7.0.2",
+    "@lit-protocol/auth-helpers": "^7.1.0",
+    "@lit-protocol/constants": "^7.1.0",
+    "@lit-protocol/lit-auth-client": "^7.1.0",
+    "@lit-protocol/lit-node-client": "^7.1.0",
     "bitcoinjs-lib": "^6.1.7",
     "buffer": "^6.0.3",
     "dotenv": "^16.4.7",
