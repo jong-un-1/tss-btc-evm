@@ -1,6 +1,30 @@
 # BTC-EVM Swap 部署指南
 
-## 📋 部署步骤
+## � 项目概述
+
+使用 **Lit Protocol v7.3.1** 的 MPC 网络实现 Bitcoin 和 EVM 之间的去中心化跨链原子交换。
+
+### ✨ 核心功能
+
+- **跨链原子交换** - Bitcoin ↔ EVM 去中心化资产转移
+- **PKP 管理** - Programmable Key Pairs 可编程密钥对
+- **Lit Actions** - 链上智能合约逻辑执行
+- **P2PKH 地址** - 比特币 Pay-to-PubKey-Hash 地址生成
+- **时间锁保证** - 原子交换安全机制（4天过期）
+
+### 📊 部署流程
+
+1. ✅ **环境配置** - 安装依赖包，配置 Pinata API 和私钥
+2. ✅ **生成 Lit Action** - 创建跨链交换逻辑并上传到 IPFS
+3. ✅ **铸造 PKP** - 创建 PKP 并授权 Lit Action
+4. ✅ **生成 BTC 地址** - 为 PKP 生成 P2PKH 比特币地址
+5. ✅ **充值测试币** - 向 PKP 充值 BTC 和 ETH
+6. ✅ **检查资金状态** - 验证两条链的余额
+7. ✅ **执行跨链交换** - BTC ↔ EVM 交易成功广播！
+
+---
+
+## �📋 部署步骤
 
 ### 方案 A: 使用 Pinata IPFS (推荐)
 
