@@ -13,8 +13,8 @@ async function transferEthToPKP() {
         provider
     );
 
-    // PKP 地址
-    const pkpAddress = "0x2BEb20debF3C92dbaB76A1E80096d16dB914c531";
+    // PKP 地址 - 更新为新的地址
+    const pkpAddress = "0x69BB1b09241242E157Fb41C85A06EB488263C4c7";
 
     console.log("From address:", wallet.address);
     console.log("To address:", pkpAddress);

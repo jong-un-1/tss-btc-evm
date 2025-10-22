@@ -2,12 +2,12 @@ import { generateBtcEthSwapLitActionCode } from "./create-swap-action";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { LitContracts } from "@lit-protocol/contracts-sdk";
 import {
-    LitNetwork,
-    AuthMethodType,
-    AuthMethodScope,
+    LIT_NETWORK,
+    AUTH_METHOD_TYPE,
+    AUTH_METHOD_SCOPE,
     LIT_CHAINS,
     LIT_RPC,
-    LitAbility,
+    LIT_ABILITY,
 } from "@lit-protocol/constants";
 import {
     LitActionResource,
@@ -73,7 +73,7 @@ let mintedPKP: Pkp,
 // major functions ----------------------------
 
 const litNodeClient = new LitNodeClient({
-    litNetwork: LitNetwork.DatilDev,
+    litNetwork: LIT_NETWORK.DatilDev,
     debug: false,
 });
 
@@ -96,7 +96,7 @@ export async function mintGrantBurnPKP(_action_ipfs: string) {
 
     const litContracts = new LitContracts({
         signer: signer,
-        network: LitNetwork.DatilDev,
+        network: LIT_NETWORK.DatilDev,
         debug: false,
     });
 
@@ -108,11 +108,11 @@ export async function mintGrantBurnPKP(_action_ipfs: string) {
 
     const tx =
         await litContracts.pkpHelperContract.write.mintNextAndAddAuthMethods(
-            AuthMethodType.LitAction,
-            [AuthMethodType.LitAction],
+            AUTH_METHOD_TYPE.LitAction,
+            [AUTH_METHOD_TYPE.LitAction],
             [bytesAction],
             ["0x"],
-            [[AuthMethodScope.SignAnything]],
+            [[AUTH_METHOD_SCOPE.SignAnything]],
             false,
             true,
             {
@@ -468,7 +468,12 @@ async function getAuthSig(_signer: ethers.Wallet) {
         walletAddress: await _signer.getAddress(),
         nonce: await litNodeClient.getLatestBlockhash(),
         litNodeClient,
-        // resources: []
+        resources: [
+            {
+                resource: new LitActionResource("*"),
+                ability: LIT_ABILITY.LitActionExecution,
+            },
+        ],
     });
 
     const authSig = await generateAuthSig({
@@ -547,11 +552,11 @@ async function sessionSigEOA(_signer: ethers.Wallet, _mintedPKP: Pkp) {
         resourceAbilityRequests: [
             {
                 resource: new LitPKPResource("*"),
-                ability: LitAbility.PKPSigning,
+                ability: LIT_ABILITY.PKPSigning,
             },
             {
                 resource: new LitActionResource("*"),
-                ability: LitAbility.LitActionExecution,
+                ability: LIT_ABILITY.LitActionExecution,
             },
         ],
         authNeededCallback: async (params) => {

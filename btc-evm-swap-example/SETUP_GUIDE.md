@@ -286,27 +286,79 @@ const [litActionCode, setLitActionCode] = useState(null); // 改为存储代码
 
 ## ✅ 测试验证
 
-**项目已通过完整的端到端测试 (2025年10月21日):**
+**项目已通过完整的端到端测试:**
 
-### 测试环境
+### 最新测试 (2025年10月22日)
+
+**测试环境:**
 - Lit Protocol: v7.3.1 (DatilDev Network)
-- Bitcoin: Testnet
+- Bitcoin: Testnet  
 - EVM: Chronicle Yellowstone
+- 所有废弃 API 已更新为最新版本
 
-### 测试结果
+**测试结果:**
 
 1. ✅ **Lit Action 生成**
    - 成功生成跨链交换逻辑
    - 成功上传到 IPFS (Pinata)
-   - IPFS CID: `QmZzq9pE99RTWi6U8Z4JT1bkTTc1TTRuS-Nan6hE1tb2tF`
+   - IPFS CID: `QmVbsDEmXaoaoregmeTXVojtqeFPsXgMJTCPbTeTcZWxYj`
+   - 代码大小: 5,442 bytes
 
 2. ✅ **PKP 铸造**
    - 成功铸造 PKP 并授权 Lit Action
-   - PKP 地址: `0x2BEb20debF3C92dbaB76A1E80096d16dB914c531`
-   - Token ID: 成功生成
+   - PKP EVM 地址: `0x69BB1b09241242E157Fb41C85A06EB488263C4c7`
+   - PKP Public Key: `0x04e61d4f4a661ea72c4686c8ce424b460008401aabdf54ea...`
+   - Token ID: `37657466616778144664169466974831452499875093578891337110686752436560724549246`
 
 3. ✅ **BTC 地址生成**
    - 成功为 PKP 生成 P2PKH 地址
+   - BTC 地址: `mjW8nyuz6LTwGEqbbhcALd4QqkgqVzG9HU`
+
+4. ✅ **资金充值**
+   - EVM 余额: 0.1 ETH
+   - BTC 余额: 194,788 sats
+
+5. ✅ **跨链交换执行**
+   - Session Signatures 创建成功
+   - UTXO 验证通过
+   - BTC 交易费: 6,328 sats
+   - BTC 交易: [539475cd...](https://blockstream.info/testnet/tx/539475cd205d70bc6945883ad33966947826a870e993dea17e8cf6aafa505325) ✅
+   - EVM 交易: 广播成功 ✅
+   - 状态: **成功完成** ✅
+
+### 代码更新记录 (v7.3.1)
+
+**废弃 API 已全部更新:**
+- `LitNetwork` → `LIT_NETWORK`
+- `LitAbility` → `LIT_ABILITY`
+- `AuthMethodType` → `AUTH_METHOD_TYPE`
+- `AuthMethodScope` → `AUTH_METHOD_SCOPE`
+- `createSiweMessageWithRecaps` 添加了必需的 `resources` 参数
+
+**依赖更新:**
+- 安装 `@walletconnect/modal` 解决模块缺失警告
+- 所有 Lit Protocol 包保持在稳定版本 7.3.1
+
+### 关键指标
+- 总测试时间: ~10 分钟
+- BTC 交易费: 6,328 sats
+- PKP 铸造成本: ~0.001 ETH
+- 跨链延迟: < 1 分钟
+- UTXO 值: 194,788 sats
+
+---
+
+### 历史测试 (2025年10月21日)
+
+**测试结果:**
+
+1. ✅ **Lit Action 生成**
+   - IPFS CID: `QmZzq9pE99RTWi6U8Z4JT1bkTTc1TTRuS-Nan6hE1tb2tF`
+
+2. ✅ **PKP 铸造**
+   - PKP 地址: `0x2BEb20debF3C92dbaB76A1E80096d16dB914c531`
+
+3. ✅ **BTC 地址生成**
    - BTC 地址: `mrexdxf4madm41L2q6kYg3sRmVqVmKa88V`
 
 4. ✅ **资金充值**
@@ -316,13 +368,6 @@ const [litActionCode, setLitActionCode] = useState(null); // 改为存储代码
 5. ✅ **跨链交换执行**
    - BTC 交易: [842c8181...](https://blockstream.info/testnet/tx/842c8181435dcb4dd6dbdc5adcdba663346d07a6eb278336a4ac2d55b76c188a)
    - EVM 交易: [0xc0c734d9...](https://yellowstone-explorer.litprotocol.com/tx/0xc0c734d9892e0dcd6785a20377234e8176a429e640a9a0253dfb5d0cc1e3ca13)
-   - 状态: **成功完成** ✅
-
-### 关键指标
-- 总测试时间: ~15 分钟
-- BTC 交易费: 6,328 sats
-- PKP 铸造成本: ~0.001 ETH
-- 跨链延迟: < 1 分钟
 
 ---
 
@@ -348,6 +393,7 @@ const [litActionCode, setLitActionCode] = useState(null); // 改为存储代码
 - IPFS 存储 (Pinata)
 - 原子交换逻辑
 
-**部署日期:** 2025年10月21日  
-**Lit Protocol 版本:** v7.3.1  
+**部署日期:** 2025年10月22日  
+**最新测试:** 2025年10月22日  
+**Lit Protocol 版本:** v7.3.1 (所有废弃 API 已更新)  
 **Next.js 版本:** 15.1.4
