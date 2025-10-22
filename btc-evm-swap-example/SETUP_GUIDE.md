@@ -16,7 +16,7 @@
 
 1. ✅ **环境配置** - 安装依赖包，配置 Pinata API 和私钥
 2. ✅ **生成 Lit Action** - 创建跨链交换逻辑并上传到 IPFS
-3. ✅ **铸造 PKP** - 创建 PKP 并授权 Lit Action
+3. ✅ **铸造 PKP** - 创建 PKP 使用 PKP 作为跨链托管签名器, 并且授权 Lit Action
 4. ✅ **生成 BTC 地址** - 为 PKP 生成 P2PKH 比特币地址
 5. ✅ **充值测试币** - 向 PKP 充值 BTC 和 ETH
 6. ✅ **检查资金状态** - 验证两条链的余额
@@ -326,6 +326,37 @@ const [litActionCode, setLitActionCode] = useState(null); // 改为存储代码
    - EVM 交易: 广播成功 ✅
    - 状态: **成功完成** ✅
 
+**交易详情分析:**
+
+📊 **BTC 交易 (539475cd...)**
+```
+输入 (Input):
+├─ 来自: mjW8nyuz6LTwGEqbbhcALd4QqkgqVzG9HU (PKP BTC 地址)
+├─ UTXO: b3c5b107...955c9c:1
+└─ 金额: 194,788 sats
+
+输出 (Outputs):
+├─ [0] → mmnxChcUSLdPGuvSmkpUr7ngrNjfTYKcRq: 1,000 sats ✅ (交换金额)
+└─ [1] → mjW8nyuz6LTwGEqbbhcALd4QqkgqVzG9HU: 187,460 sats (找零)
+
+交易费: 6,328 sats
+确认区块: 4,737,540
+交易时间: 2025-10-21 21:18:43 UTC
+```
+
+💰 **余额变化 (Test 2 PKP)**
+```
+BTC 地址: mjW8nyuz6LTwGEqbbhcALd4QqkgqVzG9HU
+├─ 总接收: 382,248 sats (2 笔交易)
+├─ 总支出: 194,788 sats (1 笔交易)
+└─ 当前余额: 187,460 sats
+
+EVM 地址: 0x69BB1b09241242E157Fb41C85A06EB488263C4c7
+├─ 充值: 0.1 ETH
+├─ 支出: ~0.01000021 ETH (0.01 ETH + gas)
+└─ 当前余额: 0.08999979 ETH
+```
+
 ### 代码更新记录 (v7.3.1)
 
 **废弃 API 已全部更新:**
@@ -348,6 +379,35 @@ const [litActionCode, setLitActionCode] = useState(null); // 改为存储代码
 
 ---
 
+## 📈 接收方余额统计
+
+**BTC 接收地址:** `mmnxChcUSLdPGuvSmkpUr7ngrNjfTYKcRq`
+```
+总接收: 32,284 sats (来自 6 笔交易)
+├─ Test 1 交换: 1,000 sats
+├─ Test 2 交换: 1,000 sats
+└─ 其他: 30,284 sats
+
+总支出: 20,284 sats (1 笔交易)
+当前余额: 12,000 sats
+```
+
+**EVM 接收地址:** `0x48e6a467852Fa29710AaaCDB275F85db4Fa420eB`
+```
+总接收: 0.02 ETH (来自 2 次测试)
+├─ Test 1 交换: 0.01 ETH
+└─ Test 2 交换: 0.01 ETH
+
+当前余额: 0.02 ETH
+```
+
+**✅ 两次测试共完成交换:**
+- **BTC 方向:** 2,000 sats (1,000 × 2) → mmnxChcUSLdPGuvSmkpUr7ngrNjfTYKcRq
+- **EVM 方向:** 0.02 ETH (0.01 × 2) → 0x48e6a467852Fa29710AaaCDB275F85db4Fa420eB
+- **总手续费:** 12,656 sats BTC 交易费 + ~0.00000042 ETH gas 费
+
+
+
 ### 历史测试 (2025年10月21日)
 
 **测试结果:**
@@ -368,6 +428,37 @@ const [litActionCode, setLitActionCode] = useState(null); // 改为存储代码
 5. ✅ **跨链交换执行**
    - BTC 交易: [842c8181...](https://blockstream.info/testnet/tx/842c8181435dcb4dd6dbdc5adcdba663346d07a6eb278336a4ac2d55b76c188a)
    - EVM 交易: [0xc0c734d9...](https://yellowstone-explorer.litprotocol.com/tx/0xc0c734d9892e0dcd6785a20377234e8176a429e640a9a0253dfb5d0cc1e3ca13)
+
+**交易详情分析:**
+
+📊 **BTC 交易 (842c8181...)**
+```
+输入 (Input):
+├─ 来自: mrexdxf4madm41L2q6kYg3sRmVqVmKa88V (PKP BTC 地址)
+├─ UTXO: e08538fc...407239:0
+└─ 金额: 187,413 sats
+
+输出 (Outputs):
+├─ [0] → mmnxChcUSLdPGuvSmkpUr7ngrNjfTYKcRq: 1,000 sats ✅ (交换金额)
+└─ [1] → mrexdxf4madm41L2q6kYg3sRmVqVmKa88V: 180,085 sats (找零)
+
+交易费: 6,328 sats
+确认区块: 4,737,476
+交易时间: 2025-10-21 02:04:20 UTC
+```
+
+💰 **余额变化 (Test 1 PKP)**
+```
+BTC 地址: mrexdxf4madm41L2q6kYg3sRmVqVmKa88V
+├─ 总接收: 367,498 sats (2 笔交易)
+├─ 总支出: 187,413 sats (1 笔交易)
+└─ 当前余额: 180,085 sats
+
+EVM 地址: 0x2BEb20debF3C92dbaB76A1E80096d16dB914c531
+├─ 充值: 0.1 ETH
+├─ 支出: ~0.01000021 ETH (0.01 ETH + gas)
+└─ 当前余额: 0.08999979 ETH
+```
 
 ---
 
