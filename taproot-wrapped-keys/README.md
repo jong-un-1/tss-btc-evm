@@ -53,7 +53,7 @@ taproot-wrapped-keys/
 - 推荐使用: `https://blockstream.info` 或 `https://mempool.space`
 
 ### 4. 开发环境
-- Node.js (v18 或更高版本)
+- Node.js (v19.9.0 或更高版本)
 - NPM 或 Yarn 包管理器
 
 ## 安装和配置

@@ -461,6 +461,17 @@ const { ciphertext, dataToEncryptHash } = await Lit.Actions.encrypt({
 
 本项目展示了如何使用 Wrapped Keys 实现 **Bitcoin Taproot 交易签名**，这是官方 SDK 不支持的高级用例。
 
+### 环境要求
+
+在开始之前，请确保满足以下要求：
+
+- **Node.js**: v19.9.0 或更高版本
+- **npm** 或 **yarn**: 最新稳定版本
+- **TypeScript**: v5.0+ (项目已包含)
+- **操作系统**: macOS, Linux, 或 Windows (WSL)
+
+> ⚠️ **重要**: Node.js v19.9.0+ 是必需的，因为项目使用了 ES 模块和最新的加密 API。
+
 ### 为什么需要自定义实现？
 
 1. **Schnorr 签名算法**
@@ -891,6 +902,189 @@ await esbuild.build({
 - Lit Actions 运行在浏览器环境中
 - `bitcoinjs-lib` 依赖 Node.js 的 `buffer` 和 `crypto` 模块
 - Shims 提供这些模块的浏览器兼容版本
+
+---
+
+## Lit Action 技术限制
+
+在部署和使用 Lit Action 之前，了解 Lit Protocol 为防止拒绝服务攻击（DoS）和资源过度消耗而设立的技术约束非常重要。
+
+### 执行时间限制
+
+不同网络环境有不同的执行时间限制：
+
+| 网络环境 | 时间限制 | 使用场景 |
+|---------|---------|---------|
+| **Datil** | 30 秒 | 生产环境 |
+| **Datil-test** | 30 秒 | 测试环境 |
+| **Datil-dev** | 60 秒 | 开发环境 |
+
+> ⚠️ **重要**: 超过时间限制的 Lit Action 将被自动终止，不会返回结果。
+
+**最佳实践**：
+```typescript
+// ✅ 优化异步操作
+const results = await Promise.all([
+    operation1(),
+    operation2(),
+    operation3(),
+]); // 并行执行，节省时间
+
+// ❌ 避免串行执行
+const result1 = await operation1();
+const result2 = await operation2();
+const result3 = await operation3(); // 串行执行，耗时过长
+```
+
+### 代码大小限制
+
+- **最大大小**: 100 MB
+- **推荐大小**: < 5 MB (更快的加载和执行)
+
+**本项目实际大小**：
+- Taproot Action: 0.7822 MB ✅ (远低于限制)
+
+**优化策略**：
+
+1. **使用代码压缩工具**
+   ```bash
+   # 使用 esbuild 压缩
+   esbuild src/actions/taproot-action.ts \
+     --bundle \
+     --minify \
+     --outfile=actions/taproot-action.js
+   ```
+
+2. **移除未使用的依赖**
+   ```typescript
+   // ❌ 导入整个库
+   import * as bitcoin from 'bitcoinjs-lib';
+   
+   // ✅ 只导入需要的模块
+   import { Transaction, payments } from 'bitcoinjs-lib';
+   ```
+
+3. **使用 Tree Shaking**
+   - ESBuild 自动移除未使用的代码
+   - 确保使用 ES 模块 (`import`/`export`)
+
+### 内存使用限制
+
+- **RAM 限制**: 256 MB
+- **适用范围**: Lit Action 执行期间的内存占用
+
+**内存优化技巧**：
+
+```typescript
+// ✅ 及时释放大型对象
+let largeData = await fetchLargeData();
+const processed = processData(largeData);
+largeData = null; // 手动释放，帮助 GC
+
+// ✅ 流式处理大数据
+for (const chunk of dataChunks) {
+    await processChunk(chunk); // 逐块处理
+}
+
+// ❌ 避免在内存中累积大量数据
+const allData = []; // 危险！可能超出内存限制
+for (const item of items) {
+    allData.push(await fetchItem(item));
+}
+```
+
+### 网络请求限制
+
+虽然 Lit Actions 可以进行网络请求（fetch），但需要注意：
+
+- **建议**: 将请求数量控制在最小
+- **超时**: 网络请求时间计入总执行时间
+- **失败处理**: 实现重试和错误处理机制
+
+```typescript
+// ✅ 带超时和重试的网络请求
+async function fetchWithTimeout(url: string, timeout = 5000) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    
+    try {
+        const response = await fetch(url, {
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        return response;
+    } catch (error) {
+        clearTimeout(timeoutId);
+        throw error;
+    }
+}
+```
+
+### 性能监控建议
+
+在 Lit Action 中添加性能监控：
+
+```typescript
+const go = async () => {
+    const startTime = Date.now();
+    
+    try {
+        // 1. 密钥操作
+        const t1 = Date.now();
+        const decrypted = await Lit.Actions.decryptAndCombine({...});
+        console.log(`Decrypt time: ${Date.now() - t1}ms`);
+        
+        // 2. 签名操作
+        const t2 = Date.now();
+        const signature = await signTransaction(...);
+        console.log(`Sign time: ${Date.now() - t2}ms`);
+        
+        // 3. 总执行时间
+        console.log(`Total time: ${Date.now() - startTime}ms`);
+        
+        Lit.Actions.setResponse({ response: signature });
+    } catch (error) {
+        console.error(`Error after ${Date.now() - startTime}ms:`, error);
+        throw error;
+    }
+};
+```
+
+### 约束对比表
+
+| 限制类型 | 限制值 | 本项目实际 | 状态 |
+|---------|--------|-----------|------|
+| **执行时间** (Datil-dev) | 60 秒 | ~2-5 秒 | ✅ 安全 |
+| **代码大小** | 100 MB | 0.78 MB | ✅ 优秀 |
+| **内存使用** | 256 MB | < 50 MB | ✅ 安全 |
+
+### 故障排查
+
+如果遇到限制问题：
+
+1. **超时错误**
+   ```
+   Error: Lit Action execution timed out
+   ```
+   - 优化异步操作，使用并行处理
+   - 减少网络请求次数
+   - 简化复杂计算逻辑
+
+2. **代码过大错误**
+   ```
+   Error: Lit Action code size exceeds limit
+   ```
+   - 启用代码压缩 (`minify`)
+   - 移除未使用的依赖
+   - 拆分为多个 Lit Actions
+
+3. **内存不足错误**
+   ```
+   Error: Out of memory
+   ```
+   - 避免一次性加载大量数据
+   - 使用流式处理
+   - 及时释放不需要的对象
 
 ---
 

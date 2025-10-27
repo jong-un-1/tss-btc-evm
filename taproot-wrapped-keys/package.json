@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
+  "engines": {
+    "node": ">=19.9.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "test": "npm run prebuild && npm run create",
     "prebuild": "node esbuild.js",

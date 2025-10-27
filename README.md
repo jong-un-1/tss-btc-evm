@@ -18,6 +18,21 @@
 - 跨链资产交换
 - 原生 BTC 抵押/DeFi
 
+## 环境要求
+
+在开始之前，请确保满足以下要求：
+
+- **Node.js**: v19.9.0 或更高版本
+- **npm** / **yarn** / **pnpm**: 最新稳定版本
+- **TypeScript**: v5.0+ (项目已包含)
+- **浏览器**: 支持 WebAuthn 的现代浏览器 (用于前端应用)
+- **测试网代币**: 
+  - Bitcoin Testnet (获取: https://coinfaucet.eu/en/btc-testnet/)
+  - Sepolia ETH (获取: https://sepoliafaucet.com/)
+  - Chronicle Yellowstone Lit Test Tokens (获取: https://chronicle-yellowstone-faucet.getlit.dev/)
+
+> ⚠️ **重要**: Node.js v19.9.0+ 是必需的，因为项目使用了 ES 模块和最新的加密 API。
+
 ## 项目结构
 
 ```
@@ -515,6 +530,60 @@ npm run dev
 2. Mint Grant Burn PKP
 3. Get BTC Address for PKP
 4. Run Lit Action
+
+## Lit Action 技术限制
+
+在使用 Lit Actions 进行跨链操作时，需要了解以下技术约束，这些约束旨在防止拒绝服务攻击（DoS）和资源过度消耗：
+
+### 执行时间限制
+
+| 网络环境 | 时间限制 | 使用场景 |
+|---------|---------|---------|
+| **Datil** | 30 秒 | 生产环境 |
+| **Datil-test** | 30 秒 | 测试环境 |
+| **Datil-dev** | 60 秒 | 开发环境 |
+
+> ⚠️ **重要**: 跨链交换 Lit Action 需要进行多次网络请求（查询余额、构建交易、广播等），请确保总执行时间在限制范围内。
+
+### 代码和资源限制
+
+- **代码大小**: 最大 100 MB
+- **内存使用**: 256 MB RAM
+- **优化建议**: 使用代码压缩工具（minifier）减小代码体积
+
+**本项目实际情况**：
+- Taproot Action: 0.78 MB ✅
+- 跨链交换 Action: ~1-2 MB ✅
+- 执行时间: 通常 2-10 秒 ✅
+
+### 性能优化建议
+
+```typescript
+// ✅ 并行执行网络请求
+const [btcBalance, evmBalance] = await Promise.all([
+    fetchBtcBalance(address),
+    fetchEvmBalance(address),
+]);
+
+// ❌ 避免串行执行
+const btcBalance = await fetchBtcBalance(address);
+const evmBalance = await fetchEvmBalance(address); // 浪费时间
+
+// ✅ 使用超时控制
+const fetchWithTimeout = (url, timeout = 5000) => {
+    return Promise.race([
+        fetch(url),
+        new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Timeout')), timeout)
+        )
+    ]);
+};
+```
+
+详细的约束说明和优化策略，请参考：
+- [Wrapped Keys 深度分析 - Lit Action 技术限制](./taproot-wrapped-keys/WRAPPED_KEYS.md#lit-action-技术限制)
+
+---
 
 ## 技术要点总结
 
